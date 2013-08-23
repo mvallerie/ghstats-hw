@@ -14,7 +14,7 @@ object GHApi {
 	lazy val root = WS.url("https://api.github.com")
 	val defaultPattern = genPattern()
 	
-
+	// Search a repository from GitHub
 	def searchRepository(keyword : String) = {
 		val searchPattern = genPattern("keyword")
 		root.get().flatMap { response =>
@@ -27,6 +27,7 @@ object GHApi {
 		}
 	}
 
+	// Get needed data from a repository (commits and contributors)
 	def statsRepository(owner : String, repo : String) = {
 		val ownerPattern = genPattern("owner")
 		val repoPattern = genPattern("repo")
@@ -38,8 +39,7 @@ object GHApi {
 						owner)
 			WS.url(repoCall).get().flatMap { repo =>
 				val contribCall = cleanCall((repo.json \ "contributors_url").as[String])
-				val commitCall = cleanCall((repo.json \ "commits_url").as[String])
-				println(commitCall)
+				val commitCall = cleanCall((repo.json \ "commits_url").as[String])+"?per_page=100"
 				for {
 					con <- WS.url(contribCall).get().map{_.json.as[JsArray]}
 					com <- WS.url(commitCall).get().map{_.json.as[JsArray]}
@@ -50,10 +50,18 @@ object GHApi {
 							
 	}
 
+
+	// ====================================================
+	// Helpers ============================================
+	// ====================================================
+	
+	// To remove unused {param} from Github URIs
 	private[this] def cleanCall(call : String) = defaultPattern replaceAllIn(call, "")
 
+	// A bit dangerous ? Needed for below method
 	private [this] implicit def strToSome(str : String) : Option[String] = Some(str)
 
+	// Maybe cleaner than " what : String = "" " ?
 	private[this] def genPattern(what : Option[String] = None) : Regex = what match {
 		case None => "\\{\\??/?([a-z_],?)+\\}".r
 		case Some(x) => ("\\{"+x+"\\}").r

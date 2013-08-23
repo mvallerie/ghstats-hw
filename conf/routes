@@ -5,10 +5,16 @@
 # Home page
 GET     /                           controllers.Application.index
 
-# Repository search
+# API Repository search
+GET	/api/search/:keyword	    controllers.Application.apiSearch(keyword: String)
+
+# API Repository stats
+GET	/api/stats/:owner/:repo	    controllers.Application.apiStats(owner: String, repo: String)
+
+# View Search
 GET	/search/:keyword	    controllers.Application.search(keyword: String)
 
-# Repository stats
+# View Stats
 GET	/stats/:owner/:repo	    controllers.Application.stats(owner: String, repo: String)
 
 # Map static resources from the /public folder to the /assets URL path
