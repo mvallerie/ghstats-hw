@@ -12,7 +12,10 @@ GET	/api/search/:keyword	    controllers.Application.apiSearch(keyword: String)
 GET	/api/stats/:owner/:repo	    controllers.Application.apiStats(owner: String, repo: String)
 
 # API Charts data
-GET	/api/charts/:owner/:repo	controllers.Application.apiCharts(owner : String, repo : String)
+GET	/api/charts/:owner/:repo    controllers.Application.apiCharts(owner : String, repo : String)
+
+# OAuth Github callback URL
+GET	/auth			    controllers.Application.auth(code : String ?= "", state : String ?= "")
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
