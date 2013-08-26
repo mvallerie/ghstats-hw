@@ -12,8 +12,8 @@ import scala.util.matching.Regex
 
 object GHChartsApi {
 	// TODO split into several parts ?
-	def getChartsData(owner : String, repo : String) = {
-                       GHApi.statsRepository(owner, repo).map { stats =>
+	def getChartsData(owner : String, repo : String, token : Option[String]) = {
+                       GHApi.statsRepository(owner, repo, token).map { stats =>
                                 // TODO : ordering
                                 val commitsPerUser = (stats \ "commits" \\ "email")
                                         .groupBy(identity)

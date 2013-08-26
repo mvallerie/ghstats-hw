@@ -13,30 +13,30 @@ import play.api.libs.Codecs._
 import models._
 
 
-object Application extends Controller {
+object Application extends Controller with Tokenize {
 	def index = Action { implicit request =>
 		Ok(views.html.index("Let's search a Github repository :)."))
 	}
   
-	def apiSearch(keyword : String) = Action {
+	def apiSearch(keyword : String) = WithToken { token =>
 		Async {
-			GHApi.searchRepository(keyword).map { repos =>
+			GHApi.searchRepository(keyword, token).map { repos =>
     				Ok(repos)
 			}
 		}
 	}
 
-	def apiStats(owner : String, repo : String) = Action {
+	def apiStats(owner : String, repo : String) = WithToken { token =>
 		Async {
-			GHApi.statsRepository(owner, repo).map { stats =>
+			GHApi.statsRepository(owner, repo, token).map { stats =>
 				Ok(stats)
 			}
 		}
 	}
 	
-	def apiCharts(owner : String, repo : String) = Action {
+	def apiCharts(owner : String, repo : String) = WithToken { token =>
 		Async {
-			GHChartsApi.getChartsData(owner, repo).map { chartsData =>
+			GHChartsApi.getChartsData(owner, repo, token).map { chartsData =>
 				Ok(chartsData)
 			}
 		}
@@ -66,4 +66,19 @@ object Application extends Controller {
 		}
 	}
 
+	def quit = Action { request =>
+		Redirect(routes.Application.index).withNewSession
+	}
+
+}
+
+
+trait Tokenize {
+	def token(request: RequestHeader) = request.session.get("token")
+
+	def WithToken(f: => Option[String] => AsyncResult) = {
+		Action { request =>
+			f(token(request))
+		}
+	}
 }

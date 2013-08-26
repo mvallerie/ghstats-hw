@@ -1,5 +1,7 @@
 package models
 
+import util.Settings._
+
 import play.api._
 import play.api.mvc._
 import play.api.libs.ws.WS
@@ -11,39 +13,44 @@ import scala.concurrent.Future
 import scala.util.matching.Regex
 
 object GHApi {
-	// TODO move that in Settings
-	lazy val root = WS.url("https://api.github.com")
 	val defaultPattern = genPattern()
 	
 	// Search a repository from GitHub
-	def searchRepository(keyword : String) = {
+	def searchRepository(keyword : String, token : Option[String]) = {
+		// Replacing {keyword} with keyword value in URI
 		val searchPattern = genPattern("keyword")
-		root.get().flatMap { response =>
+		GHWS.root(token).get().flatMap { response =>
 			val searchCall = cleanCall(
 						searchPattern replaceFirstIn(
 							(response.json \ "repository_search_url").as[String],
 							keyword)
 					)
-			WS.url(searchCall).get().map(_.json)
+			
+			// Call API and returns resulting JSON
+			GHWS.url(searchCall, token).get().map(_.json)
 		}
 	}
 
 	// Get needed data from a repository (commits and contributors)
-	def statsRepository(owner : String, repo : String) = {
+	def statsRepository(owner : String, repo : String, token : Option[String]) = {
+		// Replacing {owner} and {repo} with corresponding values in URI
 		val ownerPattern = genPattern("owner")
 		val repoPattern = genPattern("repo")
-		root.get().flatMap { response =>
+		GHWS.root(token).get().flatMap { response =>
 			val repoCall = ownerPattern replaceFirstIn(
 						repoPattern replaceFirstIn(
 							(response.json \ "repository_url").as[String],
 							repo),
 						owner)
-			WS.url(repoCall).get().flatMap { repo =>
+
+			// Calling API to get URIs to call, and calling those URIs. Finally, returning resulting JSON
+			GHWS.url(repoCall, token).get().flatMap { repo =>
 				val contribCall = cleanCall((repo.json \ "contributors_url").as[String])
+				// TODO withQueryString
 				val commitCall = cleanCall((repo.json \ "commits_url").as[String])+"?per_page=100"
 				for {
-					con <- WS.url(contribCall).get().map{_.json.as[JsArray]}
-					com <- WS.url(commitCall).get().map{_.json.as[JsArray]}
+					con <- GHWS.url(contribCall, token).get().map{_.json.as[JsArray]}
+					com <- GHWS.url(commitCall, token).get().map{_.json.as[JsArray]}
 				}
 					yield JsObject("contributors" -> con :: "commits" -> com :: Nil)
 			}
@@ -62,9 +69,22 @@ object GHApi {
 	// A bit dangerous ? Needed for below method
 	private [this] implicit def strToSome(str : String) : Option[String] = Some(str)
 
-	// Maybe cleaner than " what : String = "" " ?
+	// This is maybe cleaner than something like : ' what : String = "" ' ?
 	private[this] def genPattern(what : Option[String] = None) : Regex = what match {
 		case None => "\\{\\??/?([a-z_],?)+\\}".r
 		case Some(x) => ("\\{"+x+"\\}").r
 	}
+}
+
+
+object GHWS {
+	def url(url : String, token : Option[String] = None) = {
+		token.map { t =>
+			WS.url(url).withQueryString(("access_token", t))
+		}.getOrElse {
+			WS.url(url)
+		}
+	}
+
+	def root(token : Option[String] = None) = url(API_ROOT, token)
 }
