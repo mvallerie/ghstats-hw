@@ -1,4 +1,14 @@
 @(message: String)
 
 @main("Zenexity Homework") {
+	<div class="ui-widget">
+		<label for="repos">Search repo. : </label>
+		<input id="repos" />
+	</div>
+	<div class="ui-widget" style="margin-top: 2em; font-family: Arial;">
+		Result:
+		@charts()
+	</div>
+
+	
 }

@@ -22,10 +22,10 @@ commitsPerUser = (contributors) ->
 	# TODO maybe some JQuery UI ?
 	# TODO https://github.com/nostalgiaz/bootstrap-switch
 	# TODO BOOTSTRAP
-	$('.buttons button').click (event) ->
-		commitsPerUserChart.setType($(this).attr('data-type'))
-		$('.buttons button').removeClass('toggled')
-		$(this).attr('class', 'toggled')
+	#$('.buttons button').click (event) ->
+	#	commitsPerUserChart.setType($(this).attr('data-type'))
+	#	$('.buttons button').removeClass('toggled')
+	#	$(this).attr('class', 'toggled')
 
 
 
@@ -56,15 +56,25 @@ commitsTimeline = (timeline) ->
 	commitsTimelineChart = new xChart('Commits Timeline', data, '#commitsTimeline', opts)
 
 
+convertForAutocomplete = (repositories) ->
+	$.map repositories, (val,i) ->
+		"#{ val.owner }/#{ val.name }"
 
-$ ->
-	uri = $(location).attr('href')
-	matches = uri.split('/')
-	[owner, repo] = [matches[matches.length-2], matches[matches.length-1]]
-
+loadCharts = (owner, repo) ->
 	# Put it directly into .get call ?
 	onResponse = (data) ->
 		commitsPerUser data.contributors
 		commitsTimeline data.timeline
-	
+
 	$.get "/api/charts/#{ owner }/#{ repo }", onResponse, "json"
+
+
+$ ->
+	$("#repos").autocomplete({
+		source: ( (request, response) ->
+			$.get("/api/search/#{ request.term }", ((r) -> response(convertForAutocomplete(r.repositories))), "json")),
+		minLength: 4,
+		select: ( (event, ui) ->
+			s = ui.item.value.split('/')
+			loadCharts(s[0], s[1]))
+	})

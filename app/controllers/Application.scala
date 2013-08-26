@@ -11,7 +11,7 @@ import models._
 object Application extends Controller {
 
 	def index = Action {
-		Ok(views.html.index("Your new application is ready."))
+		Ok(views.html.index("Let's search a Github repository :)."))
 	}
   
 	def apiSearch(keyword : String) = Action {
@@ -36,10 +36,6 @@ object Application extends Controller {
 				Ok(chartsData)
 			}
 		}
-	}
-
-	def charts(owner : String, repo : String) = Action {
-		Ok(views.html.charts())
 	}
 
 }
