@@ -1,6 +1,13 @@
-@(message: String)
+@(message: String)(implicit request: play.api.mvc.RequestHeader)
 
 @main("Zenexity Homework") {
+	<span>
+	@request.session.get("token").map { t =>
+		<p>You are logged in with OAuth2 token : @t</p>
+	}.getOrElse {
+		<a href="@routes.Application.auth()">Accept app token</a> and raise rate limit up to 5000 req/hour !
+	}
+	</span>
 	<div class="ui-widget">
 		<label for="repos">Search repo. : </label>
 		<input id="repos" />

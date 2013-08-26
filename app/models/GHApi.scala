@@ -11,6 +11,7 @@ import scala.concurrent.Future
 import scala.util.matching.Regex
 
 object GHApi {
+	// TODO move that in Settings
 	lazy val root = WS.url("https://api.github.com")
 	val defaultPattern = genPattern()
 	
