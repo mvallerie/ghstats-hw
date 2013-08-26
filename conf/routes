@@ -5,17 +5,17 @@
 # Home page
 GET     /                           controllers.Application.index
 
-# API Repository search
+# API RAW Repository search
 GET	/api/search/:keyword	    controllers.Application.apiSearch(keyword: String)
 
-# API Repository stats
+# API RAW Repository stats
 GET	/api/stats/:owner/:repo	    controllers.Application.apiStats(owner: String, repo: String)
 
-# View Search
-GET	/search/:keyword	    controllers.Application.search(keyword: String)
+# API Charts data
+GET	/api/charts/:owner/:repo	controllers.Application.apiCharts(owner : String, repo : String)
 
-# View Stats
-GET	/stats/:owner/:repo	    controllers.Application.stats(owner: String, repo: String)
+# View Charts
+GET	/charts/:owner/:repo	    controllers.Application.charts(owner: String, repo: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

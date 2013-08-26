@@ -67,4 +67,4 @@ $ ->
 		commitsPerUser data.contributors
 		commitsTimeline data.timeline
 	
-	$.get "/api/stats/#{ owner }/#{ repo }", onResponse, "json"
+	$.get "/api/charts/#{ owner }/#{ repo }", onResponse, "json"
