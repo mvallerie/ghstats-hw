@@ -7,5 +7,4 @@ TODO :
 
 * Sorting API
 * List of committers
-* Beautiful UI (by tab ?)
 * Some code cleaning ?
