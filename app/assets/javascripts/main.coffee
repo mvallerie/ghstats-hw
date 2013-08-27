@@ -1,3 +1,15 @@
+committersList = (contributors) ->
+	committers = ({name: c.name, commits: c.commits} for c in contributors)
+	list = '<ul class="list-group">'
+	list += """
+		<li class="list-group-item">
+		<span class="badge">#{c.commits}</span>
+		#{c.name}
+		</li>
+		""" for c in committers
+	list += "</ul>"
+	$('#committersListContent').html(list)
+
 commitsPerUser = (contributors) ->
 	points = ({x: c.name, y: c.commits} for c in contributors)
 
@@ -59,13 +71,14 @@ convertForAutocomplete = (repositories) ->
 
 loadCharts = (owner, repo) ->
 	onResponse = (data) ->
+		committersList data.contributors
 		commitsPerUser data.contributors
 		commitsTimeline data.timeline
 
 	$.get "/api/charts/#{ owner }/#{ repo }", onResponse, "json"
 
 
-$ ->
+$(document).ready ->
 	$("#repos").autocomplete({
 		source: ( (request, response) ->
 			$.get("/api/search/#{ request.term }", ((r) -> response(convertForAutocomplete(r.repositories))), "json")),
@@ -74,3 +87,6 @@ $ ->
 			s = ui.item.value.split('/')
 			loadCharts(s[0], s[1]))
 	})
+
+	$('#statsTabs').tabs()
+	$('#statsTabs a:first').tab('show')

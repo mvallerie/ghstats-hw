@@ -1,21 +1,22 @@
 <div class="container">
-	<ul class="nav nav-tabs">
+	<ul class="nav nav-tabs" id="statsTabs">
 	<li><a href="#committersList" data-toggle="tab">Committers list</a></li>
 	<li><a href="#commitsPerUser" data-toggle="tab">Commits per user</a></li>
 	<li><a href="#commitsTimeline" data-toggle="tab">Commits timeline</a></li>
 	</ul>
 
 	<div class="tab-content">
-		<div class="tab-pane fade active" id="committersList">
+		<div class="tab-pane fade" id="committersList">
+			<div id="committersListContent"></div>
 		</div>
 		<div class="tab-pane fade" id="commitsPerUser">
 			<div class="btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				Chart format <span class="caret"></span>
+				View as <span class="caret"></span>
 				</button>
 				<ul class="dropdown-menu" role="menu">
-				<li><a id="barBtn" href="#">Bar</a></li>
-				<li><a id="linesBtn" href="#">Lines</a></li>
+				<li><a id="barBtn" href="#">Bar Chart</a></li>
+				<li><a id="linesBtn" href="#">Line Chart</a></li>
 				</ul>
 			</div>
 			<figure style="width: 800px; height: 500px;" id="commitsPerUserF"></figure>
