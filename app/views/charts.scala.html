@@ -1,6 +1,31 @@
-<span class="buttons">
-	<button class="toggled" data-type="bar">Bar</button>
-	<button data-type="line-dotted">Line</button>
-<span>
-<figure style="width: 800px; height: 500px;" id="commitsPerUser"></figure>
-<figure style="width: 800px; height: 500px;" id="commitsTimeline"></figure>
+<div class="container">
+	<ul class="nav nav-tabs">
+	<li><a href="#committersList" data-toggle="tab">Committers list</a></li>
+	<li><a href="#commitsPerUser" data-toggle="tab">Commits per user</a></li>
+	<li><a href="#commitsTimeline" data-toggle="tab">Commits timeline</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div class="tab-pane fade active" id="committersList">
+		</div>
+		<div class="tab-pane fade" id="commitsPerUser">
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				Chart format <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+				<li><a id="barBtn" href="#">Bar</a></li>
+				<li><a id="linesBtn" href="#">Lines</a></li>
+				</ul>
+			</div>
+			<figure style="width: 800px; height: 500px;" id="commitsPerUserF"></figure>
+		</div>
+		<div class="tab-pane fade" id="commitsTimeline">
+			<figure style="width: 800px; height: 500px;" id="commitsTimelineF"></figure>
+		</div>
+	</div>
+
+
+	<hr>
+
+</div>

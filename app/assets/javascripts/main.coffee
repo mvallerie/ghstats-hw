@@ -18,14 +18,11 @@ commitsPerUser = (contributors) ->
 		axisPaddingLeft: 10
 	}
 
-	commitsPerUserChart = new xChart('Contributors Commits', data, '#commitsPerUser', opts)
-	# TODO maybe some JQuery UI ?
-	# TODO https://github.com/nostalgiaz/bootstrap-switch
-	# TODO BOOTSTRAP
-	#$('.buttons button').click (event) ->
-	#	commitsPerUserChart.setType($(this).attr('data-type'))
-	#	$('.buttons button').removeClass('toggled')
-	#	$(this).attr('class', 'toggled')
+	commitsPerUserChart = new xChart('Contributors Commits', data, '#commitsPerUserF', opts)
+	$('#barBtn').click (event) ->
+		commitsPerUserChart.setType('bar')
+	$('#linesBtn').click (event) ->
+		commitsPerUserChart.setType('line')
 
 
 
@@ -53,7 +50,7 @@ commitsTimeline = (timeline) ->
 		#TODO fix it
 		tickHintY: (p.y for p in points).sort().pop()
 	}
-	commitsTimelineChart = new xChart('Commits Timeline', data, '#commitsTimeline', opts)
+	commitsTimelineChart = new xChart('Commits Timeline', data, '#commitsTimelineF', opts)
 
 
 convertForAutocomplete = (repositories) ->
@@ -61,7 +58,6 @@ convertForAutocomplete = (repositories) ->
 		"#{ val.owner }/#{ val.name }"
 
 loadCharts = (owner, repo) ->
-	# Put it directly into .get call ?
 	onResponse = (data) ->
 		commitsPerUser data.contributors
 		commitsTimeline data.timeline

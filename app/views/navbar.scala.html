@@ -1,0 +1,31 @@
+@(request: play.api.mvc.RequestHeader)
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="@routes.Application.index()">Zenexity Homework</a>
+	</div>
+	<div class="navbar-collapse collapse">
+		<form class="navbar-form navbar-left" role="search">
+			<div class="form-group">
+			<input type="text" id="repos" class="form-control" placeholder="Search project on Github">
+			</div>
+		</form>
+
+		@request.session.get("token").map { t =>
+			<form class="navbar-form navbar-right" action="@routes.Application.quit()">
+				<button type="submit" class="btn btn-danger">Logout</button>
+			</form>
+		}.getOrElse {
+			<form class="navbar-form navbar-right" action="@routes.Application.auth()">
+				<button type="submit" class="btn btn-success">Auth with GitHub</button>
+			</form>
+		}
+	</div><!--/.navbar-collapse -->
+	</div>
+</div>
