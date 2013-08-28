@@ -8,7 +8,7 @@ committersList = (contributors) ->
 		</li>
 		""" for c in committers
 	list += "</ul>"
-	$('#committersListContent').html(list)
+	$('#committersList').html(list)
 
 commitsPerUser = (contributors) ->
 	points = ({x: c.name, y: c.commits} for c in contributors)
@@ -79,14 +79,16 @@ loadCharts = (owner, repo) ->
 
 
 $(document).ready ->
-	$("#repos").autocomplete({
-		source: ( (request, response) ->
-			$.get("/api/search/#{ request.term }", ((r) -> response(convertForAutocomplete(r.repositories))), "json")),
-		minLength: 4,
-		select: ( (event, ui) ->
-			s = ui.item.value.split('/')
-			loadCharts(s[0], s[1]))
-	})
+	# Bug with Typeahead JS and Bootstrap 3, Typeahead messes a bit the look n feel of the input. Sorry, too lazy to patch :).
+	# Follow : https://github.com/twitter/typeahead.js/issues/414
+	$('#repos').typeahead({
+		name: 'gh-repos',
+		remote: {
+			url: "/api/search/%QUERY",
+			filter: (response) ->
+				({value: "#{r.owner}/#{r.name}"} for r in response.repositories)
+			}
+	}).on 'typeahead:selected typeahead:autocompleted', (dsname, datum) ->
+		s = datum.value.split('/')
+		loadCharts(s[0], s[1])
 
-	$('#statsTabs').tabs()
-	$('#statsTabs a:first').tab('show')
