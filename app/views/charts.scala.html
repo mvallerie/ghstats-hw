@@ -1,27 +1,23 @@
 <div class="container">
 	<ul class="nav nav-tabs" id="statsTabs">
 	<li class="active"><a href="#committersList" data-toggle="tab">Committers list</a></li>
-	<li><a href="#commitsPerUser" data-toggle="tab">Commits per user</a></li>
+	<li class="dropdown">
+		<a href="#" id="commitsPerUserDD" class="dropdown-toggle" data-toggle="dropdown">Commits per user <b class="caret"></b></a>
+		<ul class="dropdown-menu" role="menu" aria-labelledby="commitsPerUserDD">
+			<li><a href="#commitsPerUser" id="barTab" tabindex="-1" data-toggle="tab">Bar chart</a></li>
+			<li><a href="#commitsPerUser" id="lineTab" tabindex="-1" data-toggle="tab">Line chart</a></li>
+		</ul>
+	</li>
 	<li><a href="#commitsTimeline" data-toggle="tab">Commits timeline</a></li>
 	</ul>
 
-	<!-- Some problems may come out with fade initialisation on dynamic tab content, so i did not enable useless eyecandy stuff :) -->
 	<div class="tab-content">
-		<div class="tab-pane active" id="committersList">
+		<div class="tab-pane fade in active" id="committersList">
 		</div>
-		<div class="tab-pane" id="commitsPerUser">
-			<div class="btn-group">
-				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-				View as <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" role="menu">
-				<li><a id="barBtn" href="#">Bar Chart</a></li>
-				<li><a id="linesBtn" href="#">Line Chart</a></li>
-				</ul>
-			</div>
+		<div class="tab-pane fade" id="commitsPerUser">
 			<figure style="width: 800px; height: 500px;" id="commitsPerUserF"></figure>
 		</div>
-		<div class="tab-pane" id="commitsTimeline">
+		<div class="tab-pane fade" id="commitsTimeline">
 			<figure style="width: 800px; height: 500px;" id="commitsTimelineF"></figure>
 		</div>
 	</div>

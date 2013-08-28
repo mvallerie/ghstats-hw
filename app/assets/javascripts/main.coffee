@@ -31,9 +31,11 @@ commitsPerUser = (contributors) ->
 	}
 
 	commitsPerUserChart = new xChart('Contributors Commits', data, '#commitsPerUserF', opts)
-	$('#barBtn').click (event) ->
+	# TODO : disable tab reloading if only changing chart type
+	$('#barTab').click (event) ->
 		commitsPerUserChart.setType('bar')
-	$('#linesBtn').click (event) ->
+		
+	$('#lineTab').click (event) ->
 		commitsPerUserChart.setType('line')
 
 
@@ -86,9 +88,9 @@ $(document).ready ->
 		remote: {
 			url: "/api/search/%QUERY",
 			filter: (response) ->
+				# TODO generates some errors in webconsole, because of search API which does not handle errors correctly. Not important.
 				({value: "#{r.owner}/#{r.name}"} for r in response.repositories)
 			}
 	}).on 'typeahead:selected typeahead:autocompleted', (dsname, datum) ->
 		s = datum.value.split('/')
 		loadCharts(s[0], s[1])
-
