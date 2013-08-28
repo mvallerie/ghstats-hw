@@ -46,11 +46,10 @@ object GHApi {
 			// Calling API to get URIs to call, and calling those URIs. Finally, returning resulting JSON
 			GHWS.url(repoCall, token).get().flatMap { repo =>
 				val contribCall = cleanCall((repo.json \ "contributors_url").as[String])
-				// TODO withQueryString
-				val commitCall = cleanCall((repo.json \ "commits_url").as[String])+"?per_page=100"
+				val commitCall = cleanCall((repo.json \ "commits_url").as[String])
 				for {
 					con <- GHWS.url(contribCall, token).get().map{_.json.as[JsArray]}
-					com <- GHWS.url(commitCall, token).get().map{_.json.as[JsArray]}
+					com <- GHWS.url(commitCall, token).withQueryString(("per_page", NB_COMMITS_USED)).get().map{_.json.as[JsArray]}
 				}
 					yield JsObject("contributors" -> con :: "commits" -> com :: Nil)
 			}
@@ -77,6 +76,7 @@ object GHApi {
 }
 
 
+// WS wrapper, useful for token
 object GHWS {
 	def url(url : String, token : Option[String] = None) = {
 		token.map { t =>

@@ -14,11 +14,12 @@ object GHChartsApi {
 	// TODO split into several parts ?
 	def getChartsData(owner : String, repo : String, token : Option[String]) = {
                        GHApi.statsRepository(owner, repo, token).map { stats =>
-                                // TODO : ordering
                                 val commitsPerUser = (stats \ "commits" \\ "email")
                                         .groupBy(identity)
                                         .map { x => Json.toJson(Map("name" -> x._1, "commits" -> Json.toJson(x._2.length)))  }
-                                        .toSeq
+					.toSeq.sortWith { (x,y) =>
+						(x \ "name").as[String] <= (y \ "name").as[String]
+					}
 
                                 // Takes one per two elements of the list and extract the date (10 first chars)
                                 val dates = (stats \ "commits" \\ "date")

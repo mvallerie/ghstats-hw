@@ -31,7 +31,7 @@ commitsPerUser = (contributors) ->
 	}
 
 	commitsPerUserChart = new xChart('Contributors Commits', data, '#commitsPerUserF', opts)
-	# TODO : disable tab reloading if only changing chart type
+	# TODO : disable tab reloading if only changing chart type, not a big issue
 	$('#barTab').click (event) ->
 		commitsPerUserChart.setType('bar')
 		
@@ -61,7 +61,7 @@ commitsTimeline = (timeline) ->
 		yMin: 0,
 		axisPaddingTop: 10,
 		axisPaddingLeft: 10
-		#TODO fix it
+		#TODO Maybe find a better way to visualize ?
 		tickHintY: (p.y for p in points).sort().pop()
 	}
 	commitsTimelineChart = new xChart('Commits Timeline', data, '#commitsTimelineF', opts)
