@@ -51,7 +51,7 @@ object GHApi {
 					con <- GHWS.url(contribCall, token).get().map{_.json.as[JsArray]}
 					com <- GHWS.url(commitCall, token).withQueryString(("per_page", NB_COMMITS_USED)).get().map{_.json.as[JsArray]}
 				}
-					yield JsObject("contributors" -> con :: "commits" -> com :: Nil)
+					yield Json.obj("contributors" -> con, "commits" -> com)
 			}
 		}
 							

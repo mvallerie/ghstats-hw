@@ -15,7 +15,7 @@ GET	/api/stats/:owner/:repo	    controllers.Application.apiStats(owner: String, 
 GET	/api/charts/:owner/:repo    controllers.Application.apiCharts(owner : String, repo : String)
 
 # OAuth2 Github callback URL
-GET	/auth			    controllers.Application.auth(code : String ?= "", state : String ?= "")
+GET	/auth			    controllers.Application.auth(code : Option[String] ?= None, state : Option[String] ?= None)
 
 # OAuth2 Logout
 GET	/quit			    controllers.Application.quit

@@ -16,7 +16,7 @@ object GHChartsApi {
                        GHApi.statsRepository(owner, repo, token).map { stats =>
                                 val commitsPerUser = (stats \ "commits" \\ "email")
                                         .groupBy(identity)
-                                        .map { x => Json.toJson(Map("name" -> x._1, "commits" -> Json.toJson(x._2.length)))  }
+                                        .map { x => Json.obj("name" -> x._1, "commits" -> x._2.length)  }
 					.toSeq.sortWith { (x,y) =>
 						(x \ "name").as[String] <= (y \ "name").as[String]
 					}
@@ -31,14 +31,12 @@ object GHChartsApi {
                                 val commitsTimeline = dates.groupBy(identity)
                                         .map { x => (x._1 -> x._2.length)  }
                                         .toSeq.sorted
-                                        .map { x => Json.toJson(Map("date" -> Json.toJson(x._1), "commits" -> Json.toJson(x._2))) }
+                                        .map { x => Json.obj("date" -> x._1, "commits" -> x._2) }
 				
 				// Returns JSON formatted data	
-                                Json.toJson(
-                                        Map(
-                                                "contributors" -> commitsPerUser,
-                                                "timeline" -> commitsTimeline
-                                        )
+                                Json.obj(
+                                	"contributors" -> commitsPerUser,
+                                	"timeline" -> commitsTimeline
                                 )
                         }							
 	}

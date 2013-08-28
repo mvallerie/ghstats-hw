@@ -42,18 +42,14 @@ object Application extends Controller with Tokenize {
 		}
 	}
 
-	def auth(code : String = "", state : String = "") = Action { request =>
-		// TODO I hate ifs ... !
-		if(code.isEmpty) {
-			import scala.util.Random
-			val state = sha1((for(i <- 1 to 20) yield Random.nextPrintableChar).mkString)
-			Redirect(GH_OAUTH_URL.format(CLIENT_ID, state)).withSession(
-				"state" -> state
-			)
-		} else {
-			request.session.get("state").filter(_ == state).map { s =>
+	// This is OAuth2 GitHub auth implementation
+	def auth(code : Option[String] = None, state : Option[String] = None) = Action { request =>
+		code.flatMap { c =>
+			state.map { st =>
+
+			request.session.get("state").filter(_ == st).map { s =>
 				Async {
-					val content = Map("client_id" -> Seq(CLIENT_ID), "client_secret" -> Seq(CLIENT_SECRET), "code" -> Seq(code))
+					val content = Map("client_id" -> Seq(CLIENT_ID), "client_secret" -> Seq(CLIENT_SECRET), "code" -> Seq(c))
 					WS.url(GH_OAUTH_CONFIRM_URL).withHeaders("Accept" -> "application/json").post(content).map { response =>
 						Redirect(routes.Application.index).withSession(
 							"token" -> (response.json \ "access_token").as[String]
@@ -63,6 +59,14 @@ object Application extends Controller with Tokenize {
 			}.getOrElse {
 				Redirect(routes.Application.index).withNewSession
 			}
+
+			}
+		}.getOrElse {
+			import scala.util.Random
+			val state = sha1((for(i <- 1 to 20) yield Random.nextPrintableChar).mkString)
+			Redirect(GH_OAUTH_URL.format(CLIENT_ID, state)).withSession(
+				"state" -> state
+			)
 		}
 	}
 
